@@ -2,12 +2,14 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const uuid = require("uuid/v4");
 require("dotenv").config();
 
 const savedUsers = [];
 const savedExercises = [];
 
+const genId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).replace(/[\.]+/g, "");
+}
 app.use(cors());
 app.use(express.static("public"));
 app.use(bodyParser.json());
@@ -19,7 +21,7 @@ app.post("/api/users", (req, res) => {
   const { username } = req.body;
   const newUser = {
     username: username,
-    _id: uuid(),
+    _id: genId()
   };
   savedUsers.push(newUser);
   res.json(newUser);
