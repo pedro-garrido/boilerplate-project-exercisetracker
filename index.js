@@ -7,8 +7,13 @@ require("dotenv").config();
 const savedUsers = [];
 const savedExercises = [];
 
-const genId = () => {
-  return Date.now().toString(36) + Math.random().toString(36).replace(/[\.]+/g, "");
+const genId = (length) => {
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var result = '';
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result; 
 }
 app.use(cors());
 app.use(express.static("public"));
@@ -21,7 +26,7 @@ app.post("/api/users", (req, res) => {
   const { username } = req.body;
   const newUser = {
     username: username,
-    _id: genId()
+    _id: genId(24)
   };
   savedUsers.push(newUser);
   res.json(newUser);
