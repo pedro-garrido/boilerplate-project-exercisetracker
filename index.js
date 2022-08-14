@@ -39,7 +39,7 @@ app.get("/api/users", (req, res) => {
 app.post("/api/users/:_id?/exercises", (req, res) => {
   const { _id } = req.params;
   const { description, duration, date } = req.body;
-  const userById = savedUsers.find((user) => user._id === id);
+  const userById = savedUsers.find((user) => user._id === _id);
   const newExercise = {
     username: userById.username,
     description: description,
