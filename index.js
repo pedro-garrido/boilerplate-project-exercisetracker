@@ -38,8 +38,8 @@ app.get("/api/users", (req, res) => {
 
 app.post("/api/users/:_id?/exercises", (req, res) => {
   const { _id } = req.params;
-  const { description, duration, date } = req.body;
-  const userById = savedUsers.find((user) => user._id === _id);
+  const userById = savedUsers.find((user) => user._id == _id);
+  const { description, duration} = req.body;
   const newExercise = {
     username: userById.username,
     description: description,
@@ -53,9 +53,9 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
 
 app.get("/api/users/:_id?/logs", (req, res) => {
   const { _id } = req.params;
-  const userById = savedUsers.find((user) => user._id === id);
+  const userById = savedUsers.find((user) => user._id == _id);
   const listExercises = savedExercises.filter(
-    (exercise) => exercise._id === _id
+    (exercise) => exercise._id == _id
   );
   const log = {
     username: userById.username,
@@ -69,3 +69,4 @@ app.get("/api/users/:_id?/logs", (req, res) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
