@@ -41,13 +41,13 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
   const userById = savedUsers.find((user) => user._id == _id);
   const { description, duration} = req.body;
   
-  isNaN(parseInt(duration)) ? res.status(400).send("Duration must be a number") : duration = parseInt(duration);
+  isNaN(parseInt(duration)) ? res.status(400).send("Duration must be a number") : null;
 
   const newExercise = {
     username: userById.username,
     _id: userById._id,
     description: description,
-    duration: duration,
+    duration: parseInt(duration),
     date: new Date().toDateString()
   };
   savedExercises.push(newExercise);
