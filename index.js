@@ -27,8 +27,8 @@ app.post("/api/users", (req, res) => {
   const { username } = req.body;
   const newUser = {
     username: username,
-    _id: genId(24),
-    // _id: savedUsers.length + 1,
+    // _id: genId(24),
+    _id: savedUsers.length + 1,
     exercises: [],
   };
   savedUsers.push(newUser);
@@ -44,8 +44,7 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
   const userById = savedUsers.find((user) => user._id == _id);
   const { description, duration } = req.body;
 
-  const dateBo = (new Date(req.body.date ? req.body.date : Date.now()))
-  
+  const dateBo = new Date(req.body.date ? req.body.date : Date.now());
 
   isNaN(parseInt(duration))
     ? res.status(400).send("Duration must be a number")
@@ -66,21 +65,58 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
   });
 });
 
+const optionalWorororo = (from, to, limit, exercises) => {
+  var clean = exercises
+    .filter((exercise) => {
+      let keep = true;
+
+      let dateFrom = from ? new Date(from) : null;
+      let dateTo = to ? new Date(to) : null;
+
+      if (dateFrom && exercise.date < dateFrom) {
+        keep = false;
+      }
+      if (dateTo && exercise.date > dateTo) {
+        keep = false;
+      }
+      if (!keep) {
+        return false;
+      }
+      return true;
+    })
+    .map((clean) => {
+      return {
+        duration: clean.duration,
+        date: clean.date.toDateString(),
+        description: clean.description,
+      };
+    });
+    if (limit) {
+    clean = clean.slice(0, limit).map(clean => {return clean});
+  }
+  if (clean) {
+    return clean;
+  } else {
+    return [];
+  }
+};
+
 app.get("/api/users/:_id?/logs", (req, res) => {
-  console.log(req);
   const { _id } = req.params;
   const userById = savedUsers.find((user) => user._id == _id);
+  const { from, to, limit } = req.query;
   const listExercises = userById.exercises.map((exercise) => {
     return {
       duration: exercise.duration,
-      date: exercise.date.toDateString(),
+      date: exercise.date,
       description: exercise.description,
-    }});
-    const log = {
+    };
+  });
+  const log = {
     username: userById.username,
     count: listExercises.length,
     _id: userById._id,
-    log: listExercises,
+    log: optionalWorororo(from, to, limit, listExercises),
   };
   res.json(log);
 });
