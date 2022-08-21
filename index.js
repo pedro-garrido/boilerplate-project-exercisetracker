@@ -27,8 +27,8 @@ app.post("/api/users", (req, res) => {
   const { username } = req.body;
   const newUser = {
     username: username,
-    // _id: genId(24),
-    _id: savedUsers.length + 1,
+    _id: genId(24),
+    // _id: savedUsers.length + 1,
     exercises: [],
   };
   savedUsers.push(newUser);
@@ -44,6 +44,9 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
   const userById = savedUsers.find((user) => user._id == _id);
   const { description, duration } = req.body;
 
+  const dateBo = (new Date(req.body.date ? req.body.date : Date.now()))
+  
+
   isNaN(parseInt(duration))
     ? res.status(400).send("Duration must be a number")
     : null;
@@ -51,7 +54,7 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
   const newExercise = {
     description: description,
     duration: parseInt(duration),
-    date: new Date(),
+    date: dateBo,
   };
   userById.exercises.push(newExercise);
   res.json({
@@ -67,8 +70,11 @@ app.get("/api/users/:_id?/logs", (req, res) => {
   const { _id } = req.params;
   const userById = savedUsers.find((user) => user._id == _id);
   const listExercises = userById.exercises.map((exercise) => {
-    return exercise;
-  });
+    return {
+      duration: exercise.duration,
+      date: exercise.date.toDateString(),
+      description: exercise.description,
+    }});
   // var listExercises = savedExercises
   //   .filter((exercise) => exercise._id == _id)
   //   .map((exercise) => {
