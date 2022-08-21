@@ -67,6 +67,7 @@ app.post("/api/users/:_id?/exercises", (req, res) => {
 });
 
 app.get("/api/users/:_id?/logs", (req, res) => {
+  console.log(req);
   const { _id } = req.params;
   const userById = savedUsers.find((user) => user._id == _id);
   const listExercises = userById.exercises.map((exercise) => {
@@ -75,16 +76,7 @@ app.get("/api/users/:_id?/logs", (req, res) => {
       date: exercise.date.toDateString(),
       description: exercise.description,
     }});
-  // var listExercises = savedExercises
-  //   .filter((exercise) => exercise._id == _id)
-  //   .map((exercise) => {
-  //     return {
-  //       description: exercise.description,
-  //       duration: exercise.duration,
-  //       date: exercise.date.toDateString(),
-  //     };
-  //   });
-  const log = {
+    const log = {
     username: userById.username,
     count: listExercises.length,
     _id: userById._id,
